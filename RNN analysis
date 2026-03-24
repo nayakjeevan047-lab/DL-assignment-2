@@ -1,0 +1,65 @@
+from torchtext.datasets import IMDB
+from torchtext.data.utils import get_tokenizer
+from torchtext.vocab import build_vocab_from_iterator
+from torch.nn.utils.rnn import pad_sequence
+
+tokenizer = get_tokenizer("basic_english")
+
+def yield_tokens(data_iter):
+    for label, text in data_iter:
+        yield tokenizer(text)
+
+train_iter = IMDB(split='train')
+vocab = build_vocab_from_iterator(yield_tokens(train_iter), specials=["<unk>"])
+vocab.set_default_index(vocab["<unk>"])
+
+def text_pipeline(x):
+    return vocab(tokenizer(x))
+
+def collate_batch(batch):
+    label_list, text_list = [], []
+    for label, text in batch:
+        label_list.append(1 if label == "pos" else 0)
+        text_list.append(torch.tensor(text_pipeline(text)))
+    text_list = pad_sequence(text_list, batch_first=True)
+    return torch.tensor(label_list), text_list
+
+train_iter = IMDB(split='train')
+train_loader = torch.utils.data.DataLoader(list(train_iter),
+                                           batch_size=32,
+                                           shuffle=True,
+                                           collate_fn=collate_batch)
+
+# LSTM Model (you can replace with RNN or GRU)
+class LSTMModel(nn.Module):
+    def __init__(self, vocab_size):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, 100)
+        self.lstm = nn.LSTM(100, 128, batch_first=True)
+        self.fc = nn.Linear(128, 1)
+
+    def forward(self, x):
+        x = self.embedding(x)
+        _, (hidden, _) = self.lstm(x)
+        return torch.sigmoid(self.fc(hidden[-1]))
+
+model = LSTMModel(len(vocab)).to(device)
+
+criterion = nn.BCELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Training
+for epoch in range(5):
+    total_loss = 0
+    for labels, texts in train_loader:
+        labels, texts = labels.float().to(device), texts.to(device)
+
+        optimizer.zero_grad()
+        outputs = model(texts).squeeze()
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item()
+
+    print(f"Epoch {epoch+1}, Loss: {total_loss:.4f}")
