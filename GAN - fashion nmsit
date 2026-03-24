@@ -1,0 +1,81 @@
+import torchvision.datasets as dsets
+
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,), (0.5,))
+])
+
+dataset = dsets.FashionMNIST(root='./data', train=True,
+                            transform=transform, download=True)
+
+loader = torch.utils.data.DataLoader(dataset, batch_size=128, shuffle=True)
+
+# Generator
+class Generator(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = nn.Sequential(
+            nn.Linear(100, 256),
+            nn.ReLU(),
+            nn.Linear(256, 512),
+            nn.ReLU(),
+            nn.Linear(512, 784),
+            nn.Tanh()
+        )
+
+    def forward(self, x):
+        return self.model(x).view(-1, 1, 28, 28)
+
+# Discriminator
+class Discriminator(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = nn.Sequential(
+            nn.Linear(784, 512),
+            nn.LeakyReLU(0.2),
+            nn.Linear(512, 256),
+            nn.LeakyReLU(0.2),
+            nn.Linear(256, 1),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        return self.model(x.view(-1, 784))
+
+G = Generator().to(device)
+D = Discriminator().to(device)
+
+criterion = nn.BCELoss()
+opt_G = optim.Adam(G.parameters(), lr=0.0002)
+opt_D = optim.Adam(D.parameters(), lr=0.0002)
+
+# Training GAN
+for epoch in range(50):
+    for real, _ in loader:
+        real = real.to(device)
+        batch_size = real.size(0)
+
+        # Labels
+        real_labels = torch.ones(batch_size, 1).to(device)
+        fake_labels = torch.zeros(batch_size, 1).to(device)
+
+        # Train Discriminator
+        noise = torch.randn(batch_size, 100).to(device)
+        fake = G(noise)
+
+        loss_real = criterion(D(real), real_labels)
+        loss_fake = criterion(D(fake.detach()), fake_labels)
+        loss_D = loss_real + loss_fake
+
+        opt_D.zero_grad()
+        loss_D.backward()
+        opt_D.step()
+
+        # Train Generator
+        loss_G = criterion(D(fake), real_labels)
+
+        opt_G.zero_grad()
+        loss_G.backward()
+        opt_G.step()
+
+    print(f"Epoch {epoch+1}, D Loss: {loss_D.item()}, G Loss: {loss_G.item()}")
