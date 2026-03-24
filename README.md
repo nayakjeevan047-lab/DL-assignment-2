@@ -1,39 +1,97 @@
-deep-learning-assignment
-Install dependencies:
-
-pip install torch torchvision tensorflow matplotlib seaborn scikit-learn
-Open the notebook:
-
-jupyter notebook
-Run all cells in order.
-
-Results
-CNN Performance
-Model	Test Accuracy
-Custom CNN	92.05%
-ResNet18	67.29%
-RNN Model Comparison
-Model	Test Accuracy
-Simple RNN	81.12%
-LSTM	85.21%
-GRU	86.81%
-GAN
-The GAN successfully learned the distribution of Fashion-MNIST images and produced synthetic clothing samples.
-Training stability was observed when discriminator accuracy stabilized near 50%, indicating balanced adversarial learning.
-
-Generated Samples
-Example GAN generated images:
-
-GAN Samples
-
-Key Observations
-The custom CNN performed significantly better than the pretrained ResNet18 model on Fashion-MNIST.
-LSTM and GRU outperformed the vanilla RNN in sentiment classification tasks.
-The GAN successfully captured the general structure of Fashion-MNIST images, generating recognizable clothing patterns.
+Deep Learning Assignment 2
+CNN + RNN + GAN (Applied Deep Models)
 Author
-Jeevan Krishna 
-Information Science and Engineering
-NMAM Institute of Technology
+Name: Jeevan Krishna
+Course: Deep Learning (IS3332-1)
+Institution: NMAM Institute of Technology, Nitte
+Academic Year: 2025–26
 
-License
-This project is intended for academic and educational purposes.
+Project Overview
+This project focuses on implementing and evaluating three important deep learning models using PyTorch. The models are applied to different types of data including images, text, and generated content.
+The project includes:
+Convolutional Neural Network (CNN) for image classification
+Recurrent Neural Networks (RNN, LSTM, GRU) for sentiment analysis
+Generative Adversarial Network (GAN) for image generation
+
+Objectives
+To understand different deep learning architectures
+To apply models on real-world datasets
+To compare performance of multiple models
+To analyze training behavior and results
+
+Datasets Used
+CIFAR-10
+Total images: 60,000
+Training: 50,000
+Testing: 10,000
+Classes: 10
+IMDB Dataset
+Total reviews: 50,000
+Training: 25,000
+Testing: 25,000
+Classes: Positive and Negative
+Fashion-MNIST
+Total images: 70,000
+Training: 60,000
+Testing: 10,000
+Image size: 28 x 28 grayscale
+Classes: 10 clothing categories
+
+Models Implemented
+CNN (Image Classification)
+Convolution layers with ReLU activation
+Max pooling layers
+Fully connected layers
+Loss: Cross Entropy
+RNN, LSTM, GRU (Text Classification)
+Embedding layer
+Recurrent layer (RNN / LSTM / GRU)
+Fully connected output layer
+Loss: Binary Cross Entropy
+GAN (Image Generation)
+Generator: Generates images from noise
+Discriminator: Classifies real and fake images
+Loss: Binary Cross Entropy
+
+Tools and Technologies
+Python
+PyTorch
+Torchvision
+Torchtext
+NumPy
+Matplotlib
+Google Colab
+Training Details
+CNN
+Batch Size: 128
+Epochs: 10 to 20
+Learning Rate: 0.001
+ResNet18
+Batch Size: 64
+Epochs: 10
+Learning Rate: 0.0005
+RNN / LSTM / GRU
+Batch Size: 32
+Epochs: 5 to 10
+Learning Rate: 0.001
+GAN
+Batch Size: 128
+Epochs: 50
+Learning Rate: 0.0002
+Optimizer used: Adam
+
+Results Summary
+CNN achieved good accuracy on CIFAR-10
+ResNet18 performed better after fine-tuning
+GRU and LSTM performed better than basic RNN
+GAN successfully generated images with moderate quality
+Key Learnings
+Deep learning models perform differently based on data type
+Hyperparameter tuning is important for better performance
+Advanced models like LSTM and GRU handle sequences better
+GAN training is complex and requires careful tuning
+Conclusion
+This project provides practical understanding of CNN, RNN-based models, and GANs. It highlights how deep learning can be applied to different problem domains such as image classification, text analysis, and data generation.
+
+GitHub Repository
+https://github.com/nayakjeevan047-lab/DL-assignment-2.git⁠�
