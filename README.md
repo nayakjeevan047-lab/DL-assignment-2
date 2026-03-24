@@ -13,10 +13,10 @@ Contains Tasks and Assignments covering various concepts of Deep Learning
  0 Tags
  Activity
 Public repository
-AravindKamath/Deep-Learning-Codes
+Jeevan Krishna/Deep-Learning-Codes
 Name	
-AravindKamath
-AravindKamath
+Jeevan Krishna 
+Jeevan Krishna 
 2 days ago
 backpropagation
 5 days ago
