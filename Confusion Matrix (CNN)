@@ -1,0 +1,20 @@
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import numpy as np
+
+all_preds = []
+all_labels = []
+
+with torch.no_grad():
+    for images, labels in testloader:
+        images = images.to(device)
+        outputs = model(images)
+        _, preds = torch.max(outputs, 1)
+
+        all_preds.extend(preds.cpu().numpy())
+        all_labels.extend(labels.numpy())
+
+cm = confusion_matrix(all_labels, all_preds)
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot()
+plt.show()
